@@ -23,8 +23,6 @@ class color:
    UNDERLINE = '\033[4m'
    END = '\033[0m'
 
-# print(color.BOLD + 'Hello, World!' + color.END)
-
 def server_program():
     host = socket.gethostname()
     port = 2023
@@ -39,7 +37,6 @@ def server_program():
         if not data:
             break
         print(f"from connected client: {str(data)}")
-        #data = input(' -> ')
         conn.send(data.encode())
     conn.close()
 
