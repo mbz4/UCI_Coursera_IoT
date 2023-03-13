@@ -22,20 +22,32 @@ led_pin = 18  # GPIO pin connected to the LED
 freq = 1000   # PWM frequency (Hz)
 max_brightness = 100  # maximum duty cycle (%)
 
-GPIO.setup(led_pin, GPIO.OUT)
+def setup():
+    GPIO.setup(led_pin, GPIO.OUT)
+    pwm = GPIO.PWM(led_pin, freq)
+    return pwm
 
-pwm = GPIO.PWM(led_pin, freq)
-pwm.start(0)  # start with duty cycle of 0
+def do_the_thing(pwm):
+    pwm.start(0)  # start with duty cycle of 0
+    # gradually increase brightness
+    for brightness in range(0, max_brightness + 1):
+        pwm.ChangeDutyCycle(brightness)
+        time.sleep(0.01)  # wait 10 ms
 
-# gradually increase brightness
-for brightness in range(0, max_brightness + 1):
-    pwm.ChangeDutyCycle(brightness)
-    time.sleep(0.01)  # wait 10 ms
+    # gradually decrease brightness
+    for brightness in range(max_brightness, -1, -1):
+        pwm.ChangeDutyCycle(brightness)
+        time.sleep(0.01)  # wait 10 ms
+    pwm.stop()
 
-# gradually decrease brightness
-for brightness in range(max_brightness, -1, -1):
-    pwm.ChangeDutyCycle(brightness)
-    time.sleep(0.01)  # wait 10 ms
+def cleanup():
+    GPIO.cleanup()
 
-pwm.stop()
-GPIO.cleanup()
+if __name__ == '__main__':
+    pwm = setup()
+    i = 0
+    for i in range(0, 5):
+        i+=1
+        do_the_thing(pwm)
+        print(i)
+    cleanup()
